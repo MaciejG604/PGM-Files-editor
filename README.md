@@ -1,15 +1,15 @@
 # PGM-Files-editor
 A project I developed during my studies, it can carry out simple operations on .pgm graphics files.
 
-Here we have the original file:
+Here is an original example file:
 
 ![Angel original](https://github.com/MaciejG604/PGM-Files-editor/blob/master/Resources/Results/Original.PNG)
 
-After using the Salt&Pepper noise:
+After using the Salt&Pepper noise on the file:
 
 ![Angel salted](https://github.com/MaciejG604/PGM-Files-editor/blob/master/Resources/Results/Salt&Pepper.PNG)
 
-Now using the median filter around 5 times:
+Now applying the median filter around 5 times:
 
 ![Angel median](https://github.com/MaciejG604/PGM-Files-editor/blob/master/Resources/Results/Medianfilter.PNG)
 
