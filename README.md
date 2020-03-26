@@ -1,7 +1,7 @@
 # PGM-Files-editor
 A project I developed during my studies, it can carry out simple operations on .pgm graphics files.
 
-Here is an original example file:
+Let's take this file as an example:
 
 ![Angel original](https://github.com/MaciejG604/PGM-Files-editor/blob/master/Resources/Results/Original.PNG)
 
