@@ -4,36 +4,36 @@
 #include <time.h>
 #include <locale.h>
 #include <string.h>
-#define szansa 15
+#define szansa 15										//szansa na wprowadzenie szumu do obrazu - filtr pieprz&sol
 
-struct obraz
+struct obraz											//struktura przechowujaca obraz wczytany z pliku
 {
-	char nazwa[20];
-	char rodzaj[2];
-	int szarosc;
-	int szerokosc;
-	int wysokosc;
-	int **tablica;
+	char nazwa[20];										//nazwa obrazu
+	char rodzaj[2];										//rodzaj obrazu - P1/P2
+	int szarosc;										//maksymalna wartosc szarosci piksela
+	int szerokosc;										//szerokosc w pikselach
+	int wysokosc;										//wysokosc w pikselach
+	int **tablica;										//tablica 2D na zapis pikseli obrazu
 };
 
 
 
-int wczytaj(FILE *plikof);
-void clear();
-void filtrmedianowy(struct obraz obrazf);
-void filtrgaussa(struct obraz obrazf);
-void pieprz(struct obraz obrazf);
-void wydruk(struct obraz obrazf);
-void odbij(struct obraz obrazf, int osf);
-void negatyw(struct obraz obrazf);
-void proguj(int progf, struct obraz obrazf);
-void zapiszhist(struct obraz obrazf);
-void splot(struct obraz obrazf, int jadro[]);
-struct obraz obroc(struct obraz obrazf);
-struct obraz zmniejsz(struct obraz obrazf, int ilef);
-struct obraz zwieksz(struct obraz obrazf, int ilef);
-void wezobraz(struct obraz obrazf, int ile);
-void zapisz(struct obraz obrazf, char nazwaf[]);
+int wczytaj(FILE *plikof);								//funckja wczytujaca liczbe calkowita z pliku, pomija wszystkie inne napotkane symbole/wyrazy
+void clear();											//czyszczenie bufora danych wejsciowych
+void filtrmedianowy(struct obraz obrazf);				//zastosowanie filtru medianowego o oknie 3x3 do obrazu
+void filtrgaussa(struct obraz obrazf);					//zastosowanie filtru gaussa (okno 3x3, wagi kolejno: 1,2,1,2,4,2,1,2,1) do obrazu
+void pieprz(struct obraz obrazf);						//zastsowanie szumu typu pieprz&sol do obrazu
+void wydruk(struct obraz obrazf);						//wydruk obrazu w konsoli w formie liczb oznaczajacyh szarosc poszczegolnych pikseli
+void odbij(struct obraz obrazf, int osf);				//odbicie lustrzane obrazu wzgledem osi X (osf = 1) lub Y (osf = 2)
+void negatyw(struct obraz obrazf);						//funkcja tworzaca negatyw obrazu, dla kazdego piksela
+void proguj(int progf, struct obraz obrazf);			//funckja progujaca piksele obrazu (wszystkie piksele ciemniejsze od progf staja sie czarne, a mniejsze biale)
+void zapiszhist(struct obraz obrazf);					//funckja zapisujaca histogram do pliku histogram.csv
+void splot(struct obraz obrazf, int jadro[]);			//zastosowanie filtru o oknie 3x3 z wagami podanymi w tablicy jadro[]
+struct obraz obroc(struct obraz obrazf);				//obrocenie obrazu o 90 stopni Zgodnie z ruchem wsk. zegara
+struct obraz zmniejsz(struct obraz obrazf, int ilef);	//zmnieszenie obrazu poprzez zapisanie co "ilef" z kolei piksela
+struct obraz zwieksz(struct obraz obrazf, int ilef);	//zwiekszenie obrazu poprzez zwielokrotnienie pikseli
+void wezobraz(struct obraz obrazf, int ile);			//po wybraniu obrazu do dzialan w funckji main ta funckja odpowiada za dzialanie kolejnego menu tekstowego
+void zapisz(struct obraz obrazf, char nazwaf[]);		//zapisuje obraz pod nazwa formatu LITERALICZBA.pgm, np. A1.pgm, B3.pgm
 
 int main()
 {
@@ -124,7 +124,7 @@ int main()
 
 		switch (kom)
 		{
-			case 1:
+			case 1:	//wczytanei kolejnego obrazu
 			{
 				ileobraz++;
 				ilosc = ileobraz - 1;
@@ -162,18 +162,20 @@ int main()
 						system("cls");
 					}
 				} while (pliko == NULL);
-
+				//wczytanie naglowka pliku
 				fscanf(pliko, "%2c", &tablicaobraz[ilosc].rodzaj);
 				tablicaobraz[ilosc].szerokosc = wczytaj(pliko);
 				tablicaobraz[ilosc].wysokosc = wczytaj(pliko);
 				tablicaobraz[ilosc].szarosc = wczytaj(pliko);
+				//alokacja miejsca na piksele
 				tablicaobraz[ilosc].tablica = malloc(tablicaobraz[ilosc].wysokosc * sizeof(tablicaobraz[ilosc].tablica));
 				if (tablicaobraz[ilosc].tablica != NULL)
 				{
 					for (i = 0; i < tablicaobraz[ilosc].wysokosc; i++)
 					{
+						//alokacja miejsca na piksele
 						tablicaobraz[ilosc].tablica[i] = malloc(tablicaobraz[ilosc].szerokosc * sizeof(*tablicaobraz[ilosc].tablica));
-						if (tablicaobraz[ilosc].tablica[i] == NULL)
+						if (tablicaobraz[ilosc].tablica[i] == NULL)	//niepowodzenie alokacji
 						{
 							printf("NIEPOWODZENIE ALOKACJI");
 							for (i; i > 0; i--)
@@ -187,7 +189,7 @@ int main()
 						}
 					}
 				}
-				else
+				else												//niepowodzenie alokacji
 				{
 					printf("NIEPOWODZENIE ALOKACJI");
 					for (ilosc; ilosc >= 0; ilosc--)
@@ -214,7 +216,7 @@ int main()
 				break;
 			}
 
-			case 2:
+			case 2:	//wyswietla liste obrazow wczytanych
 			{
 				for (i = 0; i < ileobraz; i++)
 				{
@@ -230,7 +232,7 @@ int main()
 				break;
 			}
 
-			case 3:
+			case 3:	//wybiera obraz do dzialan i przechodzi do kolejnego menu
 			{
 				for (i = 0; i < ileobraz; i++)
 				{
@@ -248,7 +250,7 @@ int main()
 				break;
 			}
 
-			case 4:
+			case 4:	//wychodzi z programu
 			{
 				for (ilosc; ilosc >= 0; ilosc--)
 				{
@@ -835,7 +837,7 @@ void wezobraz(struct obraz obrazf, int ile)
 
 		switch (kom)
 		{
-			case 1:
+			case 1:		//Obrot
 			{
 				do
 				{
@@ -850,7 +852,7 @@ void wezobraz(struct obraz obrazf, int ile)
 				break;
 			}
 
-			case 2:
+			case 2:		//Odbicie lustrzane
 			{
 				
 				do
@@ -864,20 +866,20 @@ void wezobraz(struct obraz obrazf, int ile)
 				break;
 			}
 
-			case 3:
+			case 3:		//Szum pieprz&sol
 			{
 				pieprz(obrazf);
 				break;
 			}
 
-			case 4:
+			case 4:		//histogram
 			{
 				zapiszhist(obrazf);
 
 				break;
 			}
 
-			case 5:
+			case 5:		//progowanie
 			{
 				do
 				{
@@ -889,32 +891,32 @@ void wezobraz(struct obraz obrazf, int ile)
 				break;
 			}
 			
-			case 6:
+			case 6:		//negatyw
 			{
 				negatyw(obrazf);
 				break;
 			}
 
-			case 7:
+			case 7:		//filtr medianowy
 			{
 				filtrmedianowy(obrazf);
 				break;
 			}
 
-			case 8:
+			case 8:		//filtr gaussa
 			{
 				filtrgaussa(obrazf);
 				break;
 			}
 
-			case 9:
+			case 9:		//zapis obrazu
 			{
 				nazwa[0]++;
 				zapisz(obrazf, nazwa);
 				break;
 			}
 
-			case 10:
+			case 10:	//zmniejszenie
 			{
 				do
 				{
@@ -926,7 +928,7 @@ void wezobraz(struct obraz obrazf, int ile)
 				break;
 			}
 
-			case 11:
+			case 11:	//zwiekszenie
 			{
 				do
 				{
@@ -938,7 +940,7 @@ void wezobraz(struct obraz obrazf, int ile)
 				break;
 			}
 
-			case 12:
+			case 12:	//filtr o oknieku 3x3 z wybranymi wagami
 			{
 				for (i = 0; i < 3; i++)
 				{
