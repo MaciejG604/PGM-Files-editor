@@ -1,5 +1,5 @@
 # Edytor-plików-PGM
-Projekt napisany przeze mnie podczas zajęć z programwoania w języku C. Pozwala na proste działania na plikach graficznych .pgm.
+Projekt napisany przeze mnie podczas zajęć z programwoania w języku C. Pozwala na proste działania na plikach graficznych PGM.
 
 Wybierzmy plik do prezentacji działania:
 
